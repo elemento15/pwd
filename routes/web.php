@@ -29,6 +29,14 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/profiles', function () {
+    return Inertia::render('Profiles');
+})->middleware(['auth', 'verified'])->name('profiles');
+
+Route::get('/platforms', function () {
+    return Inertia::render('Platforms');
+})->middleware(['auth', 'verified'])->name('platforms');
+
 Route::get('/tools', function () {
     return Inertia::render('Tools');
 })->middleware(['auth', 'verified'])->name('tools');

@@ -1,0 +1,24 @@
+.cls-table {
+    width: 100%;
+    margin: 10px 0px;
+}
+
+.cls-table th, 
+.cls-table td {
+    border: 1px solid #ddd;
+}
+
+.cls-table thead {
+    --tw-bg-opacity: 1;
+    background-color: rgb(2 132 199 / var(--tw-bg-opacity));
+    color: #fff;
+}
+
+.cls-table thead td, 
+.cls-table tbody td {
+    padding: 2px 5px;
+}
+
+.cls-table tbody tr:hover {
+    background-color: #f9f9f9;
+}

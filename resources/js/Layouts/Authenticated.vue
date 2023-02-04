@@ -33,6 +33,18 @@ const showingNavigationDropdown = ref(false);
                             </div>
 
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <BreezeNavLink :href="route('profiles')" :active="route().current('profiles')">
+                                    Perfiles
+                                </BreezeNavLink>
+                            </div>
+
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <BreezeNavLink :href="route('platforms')" :active="route().current('platforms')">
+                                    Plataformas
+                                </BreezeNavLink>
+                            </div>
+
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <BreezeNavLink :href="route('tools')" :active="route().current('tools')">
                                     Herramientas
                                 </BreezeNavLink>
@@ -57,7 +69,7 @@ const showingNavigationDropdown = ref(false);
 
                                     <template #content>
                                         <BreezeDropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
+                                            Cerrar Sesión
                                         </BreezeDropdownLink>
                                     </template>
                                 </BreezeDropdown>
@@ -83,6 +95,14 @@ const showingNavigationDropdown = ref(false);
                             Dashboard
                         </BreezeResponsiveNavLink>
 
+                        <BreezeResponsiveNavLink :href="route('profiles')" :active="route().current('profiles')">
+                            Perfiles
+                        </BreezeResponsiveNavLink>
+
+                        <BreezeResponsiveNavLink :href="route('platforms')" :active="route().current('platforms')">
+                            Plataformas
+                        </BreezeResponsiveNavLink>
+
                         <BreezeResponsiveNavLink :href="route('tools')" :active="route().current('tools')">
                             Herramientas
                         </BreezeResponsiveNavLink>
@@ -97,7 +117,7 @@ const showingNavigationDropdown = ref(false);
 
                         <div class="mt-3 space-y-1">
                             <BreezeResponsiveNavLink :href="route('logout')" method="post" as="button">
-                                Log Out
+                                Cerrar Sesión
                             </BreezeResponsiveNavLink>
                         </div>
                     </div>
