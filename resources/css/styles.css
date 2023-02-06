@@ -1,24 +1,36 @@
+/* ----- improve navbar ----- */
+.cls-navbar a {
+    text-decoration: none;
+}
+.cls-navbar a:hover {
+    color: #333;
+}
+
+/* ----- customize table ----- */
 .cls-table {
-    width: 100%;
     margin: 10px 0px;
 }
-
-.cls-table th, 
-.cls-table td {
-    border: 1px solid #ddd;
-}
-
 .cls-table thead {
-    --tw-bg-opacity: 1;
-    background-color: rgb(2 132 199 / var(--tw-bg-opacity));
+    background-color: #999;
     color: #fff;
 }
-
-.cls-table thead td, 
-.cls-table tbody td {
-    padding: 2px 5px;
+.cls-table tbody {
+    background-color: #fff;
 }
-
 .cls-table tbody tr:hover {
     background-color: #f9f9f9;
+}
+
+/* ----- actions for custom table ----- */
+.cls-table tbody tr:hover .cls-mini-actions {
+    display: block;
+}
+.cls-mini-actions {
+    display: none;
+    text-align: center;
+}
+.cls-mini-actions i {
+    font-size: 12px;
+    margin: 0px 3px;
+    cursor: pointer;
 }

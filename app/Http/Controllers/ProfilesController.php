@@ -2,63 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Profile;
+//use Illuminate\Http\Request;
+//use App\Models\Profile;
 
-class ProfilesController extends Controller
+class ProfilesController extends AppController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return Profile::all();
-    }
+    protected $mainModel = 'App\Models\Profile';
+    protected $except = [];
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    // params needen for index
+    protected $searchFields = ['email'];
+    protected $indexPaginate = 10;
+    protected $indexJoins = [];
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+    // params needer for show
+    protected $showJoins = [];
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+    // params needed for store/update
+    protected $saveFields = ['email'];
+    protected $defaultNulls = [];
+    protected $formRules = [
+        'email' => 'unique:profiles,email,{{id}}|required|min:8',
+    ];
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    protected $allowDelete = true;
+    protected $allowUpdate = true;
+    protected $allowStore  = true;
+
+    protected $useTransactions = false;
 }
