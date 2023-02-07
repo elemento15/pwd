@@ -31,6 +31,23 @@
 }
 .cls-mini-actions i {
     font-size: 12px;
-    margin: 0px 3px;
+    margin: 0px 4px;
+    cursor: pointer;
+}
+
+/* ----- modal remove ----- */
+.cls-modal-remove .modal-vue3-header {
+    color: #b00000;
+    background-color: #eee;
+}
+.cls-modal-remove .modal-vue3-footer-cancel {
+    background-color: #ddd;
+}
+.cls-modal-remove .modal-vue3-footer-ok {
+    background-color: #b90000 !important;
+}
+
+/* ----- other styles ----- */
+.cls-pointer {
     cursor: pointer;
 }

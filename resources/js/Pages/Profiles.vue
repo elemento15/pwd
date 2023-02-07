@@ -1,106 +1,143 @@
-<script setup>
+<script>
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
 import Paginator from '@/Components/Paginator.vue';
+import Confirmation from '@/Components/Confirmation.vue';
 import { Head } from '@inertiajs/inertia-vue3';
-import axios from 'axios';
-import { ref, reactive, onMounted } from 'vue';
+import { ref } from 'vue';
 
-const dataTable = reactive({
-    list: [],
-    paginator: {
-        page: 1,
-        last: 0,
-    }
-});
+export default {
+    components: {
+        Head,
+        BreezeAuthenticatedLayout,
+        Paginator,
+        Confirmation,
+    },
 
-const form = reactive({
-    id: 0,
-    email: ''
-});
+    setup() {
+        const dataTable = ref({
+            list: [],
+            paginator: {
+                page: 1,
+                last: 0,
+            }
+        });
 
-const def_input = ref(null);
+        const form = ref({
+            id: 0,
+            email: ''
+        });
 
-const show_form = ref(false);
+        const remove = ref({
+            id: false,
+            show: false,
+        });
+
+        const def_input = ref(null);
+
+        const show_form = ref(false);
 
 
-onMounted(() => {
-    fetchData();
-});
-
-function fetchData(page = false) {
-    let params = {
-        page: page || dataTable.paginator.page,
-        order: {
-            field: 'email'
+        return {
+            dataTable,
+            form,
+            remove,
+            def_input,
+            show_form,
         }
-    };
+    },
 
-    axios.get('api/profiles', { 
-        params: params
-    }).then((response) => {
-        dataTable.list = response.data.data;
-        dataTable.paginator.page = response.data.current_page;
-        dataTable.paginator.last = response.data.last_page;
-    });
-}
+    mounted() {
+        this.fetchData();
+    },
 
-function showForm(opt) {
-    show_form.value = opt;
-    if (opt) {
-        selectDefaultInput();
-    }
-}
+    methods: {
+        fetchData(page = false) {
+            let params = {
+                page: page || this.dataTable.paginator.page,
+                order: {
+                    field: 'email'
+                }
+            };
 
-function saveForm() {
-    if (!form.id) {
-        addRecord();
-    } else {
-        updateRecord();
-    }
-}
-
-function addRecord() {
-    axios.post('api/profiles', form)
-        .then((response) => {
-            showForm(false);
-            fetchData();
-            clearForm();
-        });
-}
-
-function updateRecord() {
-    axios.patch(`api/profiles/${form.id}`, form)
-        .then((response) => {
-            showForm(false);
-            fetchData();
-            clearForm();
-        });
-}
-
-function show(id) {
-    axios.get(`api/profiles/${id}`)
-        .then((response) => {
-            _.forEach(response.data, (item, key) => {
-                form[key] = item;
+            axios.get('api/profiles', { 
+                params: params
+            }).then((response) => {
+                this.dataTable.list = response.data.data;
+                this.dataTable.paginator.page = response.data.current_page;
+                this.dataTable.paginator.last = response.data.last_page;
             });
-            showForm(true);
-        });
-}
+        },
+        
+        showForm(opt) {
+            this.show_form = opt;
+            if (opt) {
+                this.selectDefaultInput();
+            } else {
+                this.clearForm();
+            }
+        },
 
-function remove(id) {
-    //
-}
+        saveForm() {
+            if (!this.form.id) {
+                this.addRecord();
+            } else {
+                this.updateRecord();
+            }
+        },
 
-function clearForm() {
-    form.id = 0;
-    form.email = '';
-}
+        addRecord() {
+            axios.post('api/profiles', this.form)
+                .then((response) => {
+                    this.showForm(false);
+                    this.fetchData();
+                    this.clearForm();
+                });
+        },
 
-function selectDefaultInput() {
-    // delay to focus default input
-    setTimeout(() => {
-        def_input.value.select();
-    }, 200);
+        updateRecord() {
+            axios.patch(`api/profiles/${this.form.id}`, this.form)
+                .then((response) => {
+                    this.showForm(false);
+                    this.fetchData();
+                    this.clearForm();
+                });
+        },
+
+        removeRecord() {
+            axios.delete(`api/profiles/${this.remove.id}`)
+                .then((response) => {
+                    this.remove.show = false;
+                    this.fetchData(1);
+                });
+        },
+
+        show(id) {
+            axios.get(`api/profiles/${id}`)
+                .then((response) => {
+                    _.forEach(response.data, (item, key) => {
+                        this.form[key] = item;
+                    });
+                    this.showForm(true);
+                });
+        },
+
+        confirmRemove(id) {
+            this.remove.id = id;
+            this.remove.show = true;
+        },
+
+        clearForm() {
+            this.form.id = 0;
+            this.form.email = '';
+        },
+
+        selectDefaultInput() {
+            // delay to focus default input
+            setTimeout(() => {
+                this.$refs.def_input.select();
+            }, 50);
+        }
+    }
 }
 </script>
 
@@ -115,7 +152,7 @@ function selectDefaultInput() {
 
                         <!-- Table -->
                         <div v-show="!show_form" class="row">
-                            <div class="col-5">
+                            <div class="col-md-8 col-lg-6">
                                 <div>
                                     <button 
                                         type="button" 
@@ -138,7 +175,7 @@ function selectDefaultInput() {
                                                 <div class="cls-mini-actions">
                                                     <div>
                                                         <i class="bi bi-pencil-square" @click="show(row.id)"></i>
-                                                        <i class="bi bi-trash3" @click="remove(row.id)"></i>
+                                                        <i class="bi bi-trash3" @click="confirmRemove(row.id)"></i>
                                                     </div>
                                                 </div>
                                             </td>
@@ -146,15 +183,14 @@ function selectDefaultInput() {
                                         </tr>
                                     </tbody>
                                 </table>
-    
+
                                 <Paginator :paginator="dataTable.paginator" @change="fetchData"></Paginator>
                             </div>
-                            
                         </div>
 
                         <!-- Form -->
                         <div v-show="show_form" class="row">
-                            <div class="col-5">
+                            <div class="col-md-6 col-lg-4">
                                 <div>
                                     <form @submit.prevent="saveForm()">
                                         <div class="mb-3">
@@ -181,6 +217,14 @@ function selectDefaultInput() {
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Confirm delete modal -->
+                        <Confirmation 
+                            type="remove" 
+                            :visible="remove.show"
+                            @cancel="remove.show = false"
+                            @accept="removeRecord()">
+                        </Confirmation>
                     </div>
                 </div>
             </div>

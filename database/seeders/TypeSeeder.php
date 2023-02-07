@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Type;
-use PhpParser\Node\Stmt\Foreach_;
 
 class TypeSeeder extends Seeder
 {
@@ -16,9 +15,9 @@ class TypeSeeder extends Seeder
     public function run()
     {
         $types = [
-            ['name' => 'Password', 'code' => 'PASS'],
-            ['name' => 'Input', 'code' => 'STR'],
-            ['name' => 'Number', 'code' => 'NUM'],
+            ['name' => 'Password', 'code' => 'password'],
+            ['name' => 'Texto', 'code' => 'text'],
+            ['name' => 'Numero', 'code' => 'number'],
         ];
 
         if (Type::count() == 0) {

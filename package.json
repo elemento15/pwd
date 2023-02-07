@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "bootstrap": "^5.2.3",
-        "bootstrap-icons": "^1.10.3"
+        "bootstrap-icons": "^1.10.3",
+        "usemodal-vue3": "^0.3.7"
     }
 }

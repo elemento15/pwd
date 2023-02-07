@@ -19,5 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::resource('types', TypesController::class)->only('index');
     Route::resource('profiles', ProfilesController::class);
+    Route::resource('platforms', PlatformsController::class);
+    Route::resource('credentials', CredentialsController::class);
 });

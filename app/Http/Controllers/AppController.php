@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -170,7 +170,7 @@ class AppController extends Controller {
                     DB::rollBack();
                 }
                 
-                return Response::json(array('msg' => 'Error al guardar'), 500);
+                return Response::json(array('msg' => $e->getMessage() ?? 'Error al guardar'), 500);
             }
         }
     }
@@ -273,7 +273,7 @@ class AppController extends Controller {
                     DB::rollBack();
                 }
 
-                return Response::json(array('msg' => 'Error al guardar'), 500);
+                return Response::json(array('msg' => $e->getMessage()), 500);
             }
         
             return $record;
