@@ -2,6 +2,7 @@
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
 import Paginator from '@/Components/Paginator.vue';
 import Confirmation from '@/Components/Confirmation.vue';
+import SearchTable from '@/Components/SearchTable.vue';
 import { Head } from '@inertiajs/inertia-vue3';
 import axios from 'axios';
 import { ref } from 'vue';
@@ -12,6 +13,7 @@ export default {
         BreezeAuthenticatedLayout,
         Paginator,
         Confirmation,
+        SearchTable,
     },
 
     setup() {
@@ -20,7 +22,8 @@ export default {
             paginator: {
                 page: 1,
                 last: 0,
-            }
+            },
+            search: '',
         });
 
         const form = ref({
@@ -74,6 +77,7 @@ export default {
         fetchData(page = false) {
             let params = {
                 page: page || this.dataTable.paginator.page,
+                search: this.dataTable.search || '',
                 order: {
                     field: 'name'
                 }
@@ -161,6 +165,11 @@ export default {
             this.form.url = '';
             this.form.comments = '';
             this.form.types = [];
+        },
+
+        search(searchText) {
+            this.dataTable.search = searchText;
+            this.fetchData(1);
         },
 
         clearFormType() {
@@ -270,13 +279,18 @@ export default {
                         <!-- Table -->
                         <div v-show="!show_form" class="row">
                             <div class="col-md-10 col-lg-8">
-                                <div>
-                                    <button 
-                                        type="button" 
-                                        class="btn btn-dark btn-sm" 
-                                        @click="showForm(true)">
-                                        <i class="bi bi-plus-lg"></i> Agregar
-                                    </button>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button 
+                                            type="button" 
+                                            class="btn btn-dark btn-sm" 
+                                            @click="showForm(true)">
+                                            <i class="bi bi-plus-lg"></i> Agregar
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <SearchTable @search="search"/>
+                                    </div>
                                 </div>
                                 
                                 <table class="table table-bordered table-sm cls-table">
