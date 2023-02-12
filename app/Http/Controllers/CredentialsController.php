@@ -10,7 +10,10 @@ class CredentialsController extends AppController
     protected $except = [];
 
     // params needen for index
-    protected $searchFields = [];
+    protected $searchFields = [
+        'profile.email',
+        'platform.name',
+    ];
     protected $indexPaginate = 10;
     protected $indexJoins = [
         'profile:id,email',

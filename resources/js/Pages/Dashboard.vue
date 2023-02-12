@@ -2,6 +2,8 @@
 import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
 import Paginator from '@/Components/Paginator.vue';
 import Confirmation from '@/Components/Confirmation.vue';
+import SearchTable from '@/Components/SearchTable.vue';
+import Loader from '@/Components/Loader.vue';
 import { Head } from '@inertiajs/inertia-vue3';
 import axios from 'axios';
 import { ref } from 'vue';
@@ -12,6 +14,8 @@ export default {
         BreezeAuthenticatedLayout,
         Paginator,
         Confirmation,
+        SearchTable,
+        Loader,
     },
 
     setup() {
@@ -20,7 +24,8 @@ export default {
             paginator: {
                 page: 1,
                 last: 0,
-            }
+            },
+            search: ''
         });
 
         const form = ref({
@@ -48,6 +53,8 @@ export default {
 
         const show_form = ref(false);
 
+        const isLoading = ref(false);
+
         return {
             dataTable,
             form,
@@ -55,6 +62,7 @@ export default {
             def_input,
             show_form,
             lists,
+            isLoading,
         }
     },
 
@@ -70,10 +78,13 @@ export default {
         fetchData(page = false) {
             let params = {
                 page: page || this.dataTable.paginator.page,
+                search: this.dataTable.search || '',
                 order: {
                     field: 'created_at'
-                }
+                },
             };
+
+            this.isLoading = true;
 
             axios.get('api/credentials', { 
                 params: params
@@ -81,6 +92,7 @@ export default {
                 this.dataTable.list = response.data.data;
                 this.dataTable.paginator.page = response.data.current_page;
                 this.dataTable.paginator.last = response.data.last_page;
+                this.isLoading = false;
             });
         },
 
@@ -103,6 +115,7 @@ export default {
         },
 
         addRecord() {
+            this.isLoading = true;
             axios.post('api/credentials', this.form)
                 .then((response) => {
                     this.show(response.data.id);
@@ -111,6 +124,7 @@ export default {
         },
 
         updateRecord() {
+            this.isLoading = true;
             axios.patch(`api/credentials/${this.form.id}`, this.form)
                 .then(() => {
                     this.showForm(false);
@@ -120,6 +134,7 @@ export default {
         },
 
         removeRecord() {
+            this.isLoading = true;
             axios.delete(`api/credentials/${this.remove.id}`)
                 .then(() => {
                     this.remove.show = false;
@@ -128,6 +143,7 @@ export default {
         },
 
         show(id) {
+            this.isLoading = true;
             axios.get(`api/credentials/${id}`)
                 .then((response) => {
                     _.forEach(response.data, (item, key) => {
@@ -135,6 +151,7 @@ export default {
                     });
                     this.setCredentialProperties();
                     this.showForm(true);
+                    this.isLoading = false;
                 });
         },
 
@@ -163,6 +180,11 @@ export default {
             this.form.profile = {};
             this.form.platform = {};
             this.form.properties = [];
+        },
+
+        search(searchText) {
+            this.dataTable.search = searchText;
+            this.fetchData(1);
         },
 
         selectDefaultInput() {
@@ -218,18 +240,25 @@ export default {
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-gray-200 border-b border-gray-200">
+                    <div class="p-6 bg-gray-200 border-b border-gray-200 vld-parent">
+
+                        <Loader :active="isLoading"></Loader>
 
                         <!-- Table -->
                         <div v-show="!show_form" class="row">
                             <div class="col-lg-8">
-                                <div>
-                                    <button 
-                                        type="button" 
-                                        class="btn btn-dark btn-sm" 
-                                        @click="showForm(true)">
-                                        <i class="bi bi-plus-lg"></i> Agregar
-                                    </button>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button 
+                                            type="button" 
+                                            class="btn btn-dark btn-sm" 
+                                            @click="showForm(true)">
+                                            <i class="bi bi-plus-lg"></i> Agregar
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <SearchTable @search="search"/>
+                                    </div>
                                 </div>
                                 
                                 <table class="table table-bordered table-sm cls-table">

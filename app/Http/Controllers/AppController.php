@@ -72,11 +72,21 @@ class AppController extends Controller {
         if ($search) {
             $model = $model->where(function ($query) use ($search) {
                 foreach ($this->searchFields as $key => $field) {
-                    if ($key == 0) {
-                        $query = $query->where($field, 'like', '%'.$search.'%');
+                    if (strpos($field, '.') == false) {
+                        if ($key == 0) {
+                            $query = $query->where($field, 'like', '%'.$search.'%');
+                        } else {
+                            $query = $query->orWhere($field, 'like', '%'.$search.'%');
+                        }
                     } else {
-                        $query = $query->orWhere($field, 'like', '%'.$search.'%');
+                        $txt = explode('.', $field);
+                        if ($key == 0) {
+                            $query = $query->whereRelation($txt[0], $txt[1], 'like', '%'.$search.'%');
+                        } else {
+                            $query = $query->orWhereRelation($txt[0], $txt[1], 'like', '%'.$search.'%');
+                        }
                     }
+
                 }
             });
         }

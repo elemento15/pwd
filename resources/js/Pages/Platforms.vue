@@ -3,6 +3,7 @@ import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
 import Paginator from '@/Components/Paginator.vue';
 import Confirmation from '@/Components/Confirmation.vue';
 import SearchTable from '@/Components/SearchTable.vue';
+import Loader from '@/Components/Loader.vue';
 import { Head } from '@inertiajs/inertia-vue3';
 import axios from 'axios';
 import { ref } from 'vue';
@@ -14,6 +15,7 @@ export default {
         Paginator,
         Confirmation,
         SearchTable,
+        Loader,
     },
 
     setup() {
@@ -49,6 +51,8 @@ export default {
 
         const show_form = ref(false);
 
+        const isLoading = ref(false);
+
         const def_input_type = ref(null);
 
         const types = ref({
@@ -63,6 +67,7 @@ export default {
             remove,
             def_input,
             show_form,
+            isLoading,
             def_input_type,
             types,
         }
@@ -83,12 +88,15 @@ export default {
                 }
             };
 
+            this.isLoading = true;
+
             axios.get('api/platforms', { 
                 params: params
             }).then((response) => {
                 this.dataTable.list = response.data.data;
                 this.dataTable.paginator.page = response.data.current_page;
                 this.dataTable.paginator.last = response.data.last_page;
+                this.isLoading = false;
             });
         },
 
@@ -119,6 +127,7 @@ export default {
         },
 
         addRecord() {
+            this.isLoading = true;
             axios.post('api/platforms', this.form)
                 .then(() => {
                     this.showForm(false);
@@ -128,6 +137,7 @@ export default {
         },
 
         updateRecord() {
+            this.isLoading = true;
             axios.patch(`api/platforms/${this.form.id}`, this.form)
                 .then(() => {
                     this.showForm(false);
@@ -137,6 +147,7 @@ export default {
         },
 
         removeRecord() {
+            this.isLoading = true;
             axios.delete(`api/platforms/${this.remove.id}`)
                 .then(() => {
                     this.remove.show = false;
@@ -145,12 +156,14 @@ export default {
         },
 
         show(id) {
+            this.isLoading = true;
             axios.get(`api/platforms/${id}`)
                 .then((response) => {
                     _.forEach(response.data, (item, key) => {
                         this.form[key] = item;
                     });
                     this.showForm(true);
+                    this.isLoading = false;
                 });
         },
 
@@ -274,7 +287,9 @@ export default {
         <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-gray-200 border-b border-gray-200">
+                    <div class="p-6 bg-gray-200 border-b border-gray-200 vld-parent">
+
+                        <Loader :active="isLoading"></Loader>
 
                         <!-- Table -->
                         <div v-show="!show_form" class="row">

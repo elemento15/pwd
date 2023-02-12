@@ -31,7 +31,18 @@ axios.interceptors.request.use(config => {
     return config;
 });
 
+axios.interceptors.response.use((response) => {
+    return response;
+}, (error) => {
+    if (error.response.status == 401) {
+        window.location = ''; // redirect to login
+    } else {
+        return Promise.reject(error);
+    }
+});
+
 import "bootstrap/dist/js/bootstrap.min.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
 
 InertiaProgress.init({ color: '#4B5563' });
