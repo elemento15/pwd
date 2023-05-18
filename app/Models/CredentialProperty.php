@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class CredentialProperty extends Model
 {
@@ -35,6 +36,10 @@ class CredentialProperty extends Model
      */
     public function getAnswerAttribute($value)
     {
-        return decrypt($value);
+        try {
+            return decrypt($value);
+        } catch (DecryptException $e) {
+            return "";
+        }
     }
 }
